@@ -15,6 +15,10 @@ This project demonstrates modern microservices patterns using Spring Cloud compo
 │   └── pom.xml                 # Maven configuration for discovery server
 ├── post-service/              # Microservice for post management
 │   ├── src/                    # Source code for post service
+├── connections-service/       # Microservice for managing user connections
+│   ├── src/                    # Source code for connections service
+│   │   └── main/java/         # Java source files
+│   └── pom.xml                # Maven configuration for connections service
 │   │   └── main/java/         # Java source files
 │   │       └── controller/    # REST controllers for post operations
 │   │       └── service/       # Business logic implementation
@@ -73,23 +77,23 @@ cd ../post-service
 1. Register a new user:
 ```bash
 curl -X POST http://localhost:8080/api/v1/users/signup \
--H "Content-Type: application/json" \
--d '{"name":"John Doe","email":"john@example.com","password":"password123"}'
+*H "Content-Type: application/json" \
+*d '{"name":"John Doe","email":"john@example.com","password":"password123"}'
 ```
 
 2. Login to get JWT token:
 ```bash
 curl -X POST http://localhost:8080/api/v1/users/login \
--H "Content-Type: application/json" \
--d '{"email":"john@example.com","password":"password123"}'
+*H "Content-Type: application/json" \
+*d '{"email":"john@example.com","password":"password123"}'
 ```
 
 3. Create a post:
 ```bash
 curl -X POST http://localhost:8080/api/v1/posts \
--H "Content-Type: application/json" \
--H "Authorization: Bearer <your-jwt-token>" \
--d '{"content":"Hello LinkedIn!"}'
+*H "Content-Type: application/json" \
+*H "Authorization: Bearer <your-jwt-token>" \
+*d '{"content":"Hello LinkedIn!"}'
 ```
 
 ### More Detailed Examples
@@ -97,13 +101,13 @@ curl -X POST http://localhost:8080/api/v1/posts \
 1. Get user posts:
 ```bash
 curl http://localhost:8080/api/v1/posts/user/{userId} \
--H "Authorization: Bearer <your-jwt-token>"
+*H "Authorization: Bearer <your-jwt-token>"
 ```
 
 2. Like a post:
 ```bash
 curl -X POST http://localhost:8080/api/v1/posts/likes/{postId} \
--H "Authorization: Bearer <your-jwt-token>"
+*H "Authorization: Bearer <your-jwt-token>"
 ```
 
 ### Troubleshooting
@@ -169,3 +173,9 @@ Key component interactions:
 - PostgreSQL Database
 - Post Management APIs
 - Like functionality
+
+### Connections Service
+- Port: 9030
+- Neo4j Database
+- User Connections APIs
+- First-degree connection management

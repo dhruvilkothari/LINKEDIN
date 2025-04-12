@@ -1,5 +1,6 @@
 package com.dhruvil.linkedin.post_service.controller;
 
+import com.dhruvil.linkedin.post_service.auth.UserContextHolder;
 import com.dhruvil.linkedin.post_service.dto.PostCreateRequestDto;
 import com.dhruvil.linkedin.post_service.dto.PostDto;
 import com.dhruvil.linkedin.post_service.service.PostsService;

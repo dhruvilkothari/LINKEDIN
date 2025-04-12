@@ -1,5 +1,6 @@
 package com.dhruvil.linkedin.connections_service.service;
 
+import com.dhruvil.linkedin.connections_service.auth.UserContextHolder;
 import com.dhruvil.linkedin.connections_service.entity.Person;
 import com.dhruvil.linkedin.connections_service.repository.PersonsRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,8 @@ import java.util.List;
 public class ConnectionsService {
     private final PersonsRepository personRepository;
 
-    public List<Person> getFirstDegreeConnections(Long userId) {
-        log.info("Getting first degree connections for user with id: {}", userId);
+    public List<Person> getFirstDegreeConnections() {
+        Long userId = UserContextHolder.getCurrentUserId();;
 
         return personRepository.getFirstDegreeConnections(userId);
     }

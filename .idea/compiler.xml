@@ -9,7 +9,7 @@
         <module name="api-gateway" />
         <module name="discovery-server" />
       </profile>
-      <profile name="Annotation profile for connections-service" enabled="true">
+      <profile name="Annotation profile for notification_service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -19,6 +19,7 @@
         <module name="connections-service" />
         <module name="post-service" />
         <module name="user-service" />
+        <module name="notification_service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -27,6 +28,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="connections-service" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
+      <module name="notification_service" options="-parameters" />
       <module name="post-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

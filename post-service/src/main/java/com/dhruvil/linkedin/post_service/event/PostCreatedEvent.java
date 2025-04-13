@@ -1,0 +1,15 @@
+package com.dhruvil.linkedin.post_service.event;
+
+import lombok.Data;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class PostCreatedEvent {
+    Long creatorId;
+    String content;
+    Long postId;
+}
+

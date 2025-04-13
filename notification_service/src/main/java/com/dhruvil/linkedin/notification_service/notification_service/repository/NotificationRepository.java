@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Configuration
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
+    Notification findByUserId(Long userId);
 }

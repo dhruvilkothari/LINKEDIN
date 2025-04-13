@@ -4,6 +4,7 @@ import com.dhruvil.linkedin.notification_service.notification_service.entity.Not
 import com.dhruvil.linkedin.notification_service.notification_service.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,5 +21,8 @@ public class SendNotification {
 
         notificationRepository.save(notification);
         log.info("Notification saved for user: {}", userId);
+    }
+    public ResponseEntity<Notification> getNotifications(Long userId) {
+        return ResponseEntity.ok(notificationRepository.findByUserId(userId));
     }
 }

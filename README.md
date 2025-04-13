@@ -24,6 +24,10 @@ This project demonstrates modern microservices patterns using Spring Cloud compo
 │   │       └── service/       # Business logic implementation
 │   │       └── repository/    # Data access layer
 │   └── pom.xml                # Maven configuration for post service
+├── notification-service/      # Microservice for handling notifications
+│   ├── src/                    # Source code for notification service
+│   │   └── main/java/         # Java source files
+│   └── pom.xml                # Maven configuration for notification service
 └── user-service/             # Microservice for user management
     ├── src/                    # Source code for user service
     │   └── main/java/         # Java source files

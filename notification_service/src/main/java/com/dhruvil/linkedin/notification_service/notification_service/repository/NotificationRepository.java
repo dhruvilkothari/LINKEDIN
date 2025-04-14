@@ -4,7 +4,10 @@ import com.dhruvil.linkedin.notification_service.notification_service.entity.Not
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 @Configuration
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    Notification findByUserId(Long userId);
+    List<Notification> findByUserId(Long userId);
+
 }

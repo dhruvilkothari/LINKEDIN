@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -22,7 +24,7 @@ public class SendNotification {
         notificationRepository.save(notification);
         log.info("Notification saved for user: {}", userId);
     }
-    public ResponseEntity<Notification> getNotifications(Long userId) {
+    public ResponseEntity<List<Notification>> getNotifications(Long userId) {
         return ResponseEntity.ok(notificationRepository.findByUserId(userId));
     }
 }

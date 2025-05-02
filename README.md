@@ -1,48 +1,29 @@
-# LinkedIn Clone: A Microservices-based Social Network Platform
+# LinkedIn-like Application with Microservices Architecture
 
-A Spring Boot-based microservices architecture that implements core LinkedIn functionality with service discovery, API gateway, user management, and post handling capabilities. The platform provides a scalable and maintainable foundation for building a professional social networking application.
+A scalable, distributed social networking platform built with Spring Boot microservices that provides core LinkedIn-like functionality including user management, posts, connections, and notifications.
 
-This project demonstrates modern microservices patterns using Spring Cloud components, including Eureka for service discovery, Spring Cloud Gateway for API routing, and independent services for user management and post handling. The architecture enables horizontal scalability, resilience, and independent deployment of services while maintaining a cohesive user experience.
+This application implements a modern microservices architecture using Spring Cloud for service discovery, API Gateway for request routing, Kafka for event-driven communication, and multiple databases (PostgreSQL and Neo4j) for different data storage needs. The system provides robust user authentication, post management, connection handling, and real-time notifications while maintaining loose coupling between services.
 
 ## Repository Structure
 ```
 .
-├── api-gateway/                 # API Gateway service for routing and load balancing
-│   ├── src/                    # Source code for API gateway implementation
-│   └── pom.xml                 # Maven configuration for API gateway
+├── api-gateway/                 # API Gateway service for routing and authentication
+├── connections-service/         # Manages user connections using Neo4j
 ├── discovery-server/           # Eureka server for service discovery
-│   ├── src/                    # Source code for discovery server
-│   └── pom.xml                 # Maven configuration for discovery server
-├── post-service/              # Microservice for post management
-│   ├── src/                    # Source code for post service
-├── connections-service/       # Microservice for managing user connections
-│   ├── src/                    # Source code for connections service
-│   │   └── main/java/         # Java source files
-│   └── pom.xml                # Maven configuration for connections service
-│   │   └── main/java/         # Java source files
-│   │       └── controller/    # REST controllers for post operations
-│   │       └── service/       # Business logic implementation
-│   │       └── repository/    # Data access layer
-│   └── pom.xml                # Maven configuration for post service
-├── notification-service/      # Microservice for handling notifications
-│   ├── src/                    # Source code for notification service
-│   │   └── main/java/         # Java source files
-│   └── pom.xml                # Maven configuration for notification service
-└── user-service/             # Microservice for user management
-    ├── src/                    # Source code for user service
-    │   └── main/java/         # Java source files
-    │       └── controller/    # REST controllers for user operations
-    │       └── service/       # Business logic implementation
-    │       └── repository/    # Data access layer
-    └── pom.xml                # Maven configuration for user service
+├── docs/                      # Documentation and infrastructure diagrams
+├── k8s/                       # Kubernetes deployment configurations
+├── notification_service/      # Handles system notifications
+├── post-service/             # Manages user posts and interactions
+├── user-service/             # Handles user authentication and profiles
+└── docker-compose.yml        # Docker composition for local deployment
 ```
 
 ## Usage Instructions
 ### Prerequisites
-- Java Development Kit (JDK) 21
-- Maven 3.9.9 or later
-- PostgreSQL 12 or later
-- Git
+- JDK 21
+- Docker and Docker Compose
+- Maven 3.9.x
+- Kubernetes (optional, for k8s deployment)
 
 ### Installation
 
@@ -52,134 +33,148 @@ git clone <repository-url>
 cd linkedin-clone
 ```
 
-2. Start the Discovery Server:
+2. Build all services:
 ```bash
-cd discovery-server
-./mvnw spring-boot:run
+# Build each service
+cd api-gateway && ./mvnw clean package
+cd ../connections-service && ./mvnw clean package
+cd ../discovery-server && ./mvnw clean package
+cd ../notification_service && ./mvnw clean package
+cd ../post-service && ./mvnw clean package
+cd ../user-service && ./mvnw clean package
 ```
 
-3. Start the API Gateway:
+3. Start the application using Docker Compose:
 ```bash
-cd ../api-gateway
-./mvnw spring-boot:run
-```
-
-4. Start the User Service:
-```bash
-cd ../user-service
-./mvnw spring-boot:run
-```
-
-5. Start the Post Service:
-```bash
-cd ../post-service
-./mvnw spring-boot:run
+docker-compose up -d
 ```
 
 ### Quick Start
+1. Access the application at http://localhost:8080
 
-1. Register a new user:
+2. Create a new user account:
 ```bash
 curl -X POST http://localhost:8080/api/v1/users/signup \
-*H "Content-Type: application/json" \
-*d '{"name":"John Doe","email":"john@example.com","password":"password123"}'
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","password":"password123"}'
 ```
 
-2. Login to get JWT token:
+3. Login to get an authentication token:
 ```bash
 curl -X POST http://localhost:8080/api/v1/users/login \
-*H "Content-Type: application/json" \
-*d '{"email":"john@example.com","password":"password123"}'
-```
-
-3. Create a post:
-```bash
-curl -X POST http://localhost:8080/api/v1/posts \
-*H "Content-Type: application/json" \
-*H "Authorization: Bearer <your-jwt-token>" \
-*d '{"content":"Hello LinkedIn!"}'
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"password123"}'
 ```
 
 ### More Detailed Examples
 
-1. Get user posts:
+1. Create a post:
 ```bash
-curl http://localhost:8080/api/v1/posts/user/{userId} \
-*H "Authorization: Bearer <your-jwt-token>"
+curl -X POST http://localhost:8080/api/v1/posts \
+  -H "Authorization: Bearer <your-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"content":"Hello LinkedIn!"}'
 ```
 
-2. Like a post:
+2. Send a connection request:
 ```bash
-curl -X POST http://localhost:8080/api/v1/posts/likes/{postId} \
-*H "Authorization: Bearer <your-jwt-token>"
+curl -X POST http://localhost:8080/api/v1/connections/request/{userId} \
+  -H "Authorization: Bearer <your-token>"
 ```
 
 ### Troubleshooting
 
 1. Service Discovery Issues
-- Error: "Cannot register with Eureka"
-- Solution: Ensure Eureka server is running on port 8761
-- Check logs: `discovery-server/logs/spring.log`
+- Check if Eureka server is running: http://localhost:8761
+- Verify service registration in Eureka dashboard
+- Check application.properties for correct Eureka client configuration
 
 2. Database Connection Issues
-- Error: "Could not connect to PostgreSQL"
-- Solution: Verify database credentials in application.properties
-- Check database status: `pg_isready -h localhost -p 5432`
-
-3. Authentication Issues
-- Error: "Invalid JWT token"
-- Enable debug logging: Add `logging.level.org.springframework.security=DEBUG`
-- Verify token expiration and signature
-
-## Data Flow
-The application follows a microservices architecture with API Gateway routing requests to appropriate services.
-
-```ascii
-Client -> API Gateway (8080) -> [User Service (9020) / Post Service (9010)]
-                    |
-                    v
-            Discovery Server (8761)
+- Verify database containers are running:
+```bash
+docker ps | grep db
+```
+- Check database logs:
+```bash
+docker logs <container-name>
 ```
 
-Key component interactions:
-1. Client requests are routed through API Gateway
-2. API Gateway discovers services through Eureka
-3. User Service handles authentication and user management
-4. Post Service manages post creation and interactions
-5. Services communicate via REST APIs
-6. JWT tokens ensure secure communication
-7. PostgreSQL stores user and post data
+3. Kafka Issues
+- Verify Kafka broker is running:
+```bash
+docker logs kafka
+```
+- Check Kafka UI at http://localhost:8090
+
+## Data Flow
+The application follows an event-driven architecture where services communicate through both REST APIs and Kafka events.
+
+```ascii
+User Request → API Gateway → Service → Database
+     ↑          |
+     |          ↓
+Notification ← Kafka Events
+```
+
+Key interactions:
+- API Gateway authenticates requests and routes to appropriate services
+- Services publish events to Kafka topics for asynchronous processing
+- Notification service consumes events and sends notifications
+- Neo4j manages social connections graph
+- PostgreSQL stores user data, posts, and notifications
 
 ## Infrastructure
 
 ![Infrastructure diagram](./docs/infra.svg)
-### Discovery Server
-- Eureka Server: Service registry and discovery
-- Port: 8761
-- Spring Cloud Netflix Eureka Server
+
+### Databases
+- PostgreSQL Instances:
+  - notification-db: Stores notification data
+  - posts-db: Stores user posts and interactions
+  - user-db: Stores user account information
+- Neo4j Instance:
+  - connections-db: Stores user connection graph
+
+### Message Broker
+- Kafka: Handles event-driven communication between services
+  - Topics: post-created-topic, post-liked-topic, send-connection-request-topic
+
+### Service Discovery
+- Eureka Server: Manages service registry and discovery
 
 ### API Gateway
-- Spring Cloud Gateway
-- Port: 8080
-- Routes:
-  - /api/v1/users/** -> USER-SERVICE
-  - /api/v1/posts/** -> POSTS-SERVICE
-  - /api/v1/connections/** -> CONNECTIONS-SERVICE
+- Spring Cloud Gateway: Routes requests and handles authentication
 
-### User Service
-- Port: 9020
-- PostgreSQL Database
-- JWT Authentication
-- User Management APIs
+### Kubernetes Resources (k8s/)
+- Deployments for each service
+- StatefulSets for databases
+- Services for network communication
+- ConfigMaps and Secrets for configuration
 
-### Post Service
-- Port: 9010
-- PostgreSQL Database
-- Post Management APIs
-- Like functionality
+## Deployment
 
-### Connections Service
-- Port: 9030
-- Neo4j Database
-- User Connections APIs
-- First-degree connection management
+### Prerequisites
+- Kubernetes cluster
+- kubectl configured
+- Docker registry access
+
+### Deployment Steps
+1. Deploy infrastructure:
+```bash
+kubectl apply -f k8s/connections-db.yml
+kubectl apply -f k8s/notification-db.yml
+kubectl apply -f k8s/posts-db.yml
+kubectl apply -f k8s/user-db.yml
+```
+
+2. Deploy services:
+```bash
+kubectl apply -f k8s/posts-service.yml
+# Apply remaining service configurations
+```
+
+3. Verify deployment:
+```bash
+kubectl get pods
+kubectl get services
+```

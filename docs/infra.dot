@@ -12,6 +12,20 @@ digraph INFRA {
 (Spring::Application)", shape =rectangle, fillcolor = "#B7E0FF" ];
   "ConnectionsService" [ label = "ConnectionsService
 (Spring::Application)", shape =rectangle, fillcolor = "#B7E0FF" ];
+  "NotificationService" [ label = "NotificationService
+(Spring::Application)", shape =rectangle, fillcolor = "#B7E0FF" ];
+  "Kafka" [ label = "Kafka
+(Apache::Kafka)", shape =rectangle, fillcolor = "#CCE0AC" ];
+  "KafkaUI" [ label = "KafkaUI
+(Kafbat::UI)", shape =rectangle ];
+  "NotificationDB" [ label = "NotificationDB
+(PostgreSQL::Database)", shape =cylinder, fillcolor = "#FFCFB3" ];
+  "PostsDB" [ label = "PostsDB
+(PostgreSQL::Database)", shape =cylinder, fillcolor = "#FFCFB3" ];
+  "UserDB" [ label = "UserDB
+(PostgreSQL::Database)", shape =cylinder, fillcolor = "#FFCFB3" ];
+  "ConnectionsDB" [ label = "ConnectionsDB
+(Neo4j::Database)", shape =cylinder, fillcolor = "#FFCFB3" ];
   "EurekaServer" -> "DiscoveryServerApplication";
   "ApiGateway" -> "EurekaServer";
   "UserService" -> "ApiGateway";
@@ -20,4 +34,7 @@ digraph INFRA {
   "PostsService" -> "EurekaServer";
   "ConnectionsService" -> "ApiGateway";
   "ConnectionsService" -> "EurekaServer";
+  "NotificationService" -> "ApiGateway";
+  "NotificationService" -> "EurekaServer";
+  "KafkaUI" -> "Kafka";
 }
